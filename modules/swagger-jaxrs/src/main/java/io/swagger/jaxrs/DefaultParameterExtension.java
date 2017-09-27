@@ -1,5 +1,10 @@
 package io.swagger.jaxrs;
 
+import com.fasterxml.jackson.databind.BeanDescription;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.AnnotatedField;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
+import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import io.swagger.converter.ModelConverters;
 import io.swagger.jaxrs.ext.AbstractSwaggerExtension;
 import io.swagger.jaxrs.ext.SwaggerExtension;
@@ -22,13 +27,6 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.AnnotatedField;
-import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
-import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -140,7 +138,7 @@ public class DefaultParameterExtension extends AbstractSwaggerExtension {
 
                 // Gather the field's details
                 if (field != null) {
-                    paramType = field.getRawType();
+                    paramType = field.getType();
 
                     for (final Annotation fieldAnnotation : field.annotations()) {
                         if (!paramAnnotations.contains(fieldAnnotation)) {
@@ -153,7 +151,7 @@ public class DefaultParameterExtension extends AbstractSwaggerExtension {
                 if (setter != null) {
                     // Do not set the param class/type from the setter if the values are already identified
                     if (paramType == null) {
-                        paramType = setter.getRawParameterTypes() != null ? setter.getRawParameterTypes()[0] : null;
+                        paramType = setter.getGenericParameterTypes() != null ? setter.getGenericParameterTypes()[0] : null;
                     }
 
                     for (final Annotation fieldAnnotation : setter.annotations()) {
